@@ -1,0 +1,90 @@
+﻿@model MeteoWidget.Models.TameteoApi
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Meteo</title>
+</head>
+<body>
+    <div> 
+        Météo à Wattignies
+    </div>
+    <div id="cont_0621ed8f70d8a01641e0a63b785ffa86">
+        <span id="h_0621ed8f70d8a01641e0a63b785ffa86">Meteo <a id="a_0621ed8f70d8a01641e0a63b785ffa86" href="http://www.tameteo.com/meteo_Wattignies-Europe-France-Nord--1-25339.html" rel="nofollow" target="_blank" style="color:#808080;font-family:Helvetica;font-size:14px;">Wattignies</a></span>
+        <script type="text/javascript" async src="https://www.tameteo.com/wid_loader/0621ed8f70d8a01641e0a63b785ffa86"></script>
+    </div>
+    </div><p id="updatetime" style='font-family:Arial; font-size:small;'></p>
+
+    <div style="border:dashed; border-width:thick;">
+    </div>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    <script>
+	//Display refresh time
+	var currentdate = new Date();
+	document.getElementById("updatetime").innerHTML = "Last update: " + currentdate.getHours() + ":"
+					+ currentdate.getMinutes() + ":"
+					+ currentdate.getSeconds();
+    </script>
+    <script type="text/javascript">
+    var model = @Html.Raw(Json.Encode(Model));
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $('#container').highcharts({
+                title: {
+                    text: 'Temperature maximale et minimales à Wattignies',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: 'Source: tameteo.com',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['Vendredi', 'Samedi', 'Dimanche', 'Lundi', 'Mardi', 'Mercredi',
+                        'Jeudi']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Temperature (°C)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '°C'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Température minimale',
+                    data: [ @Model.minTemp[1], @Model.minTemp[2] ] //[15, 14, 13, 12, 14, 16, 14]
+                }, {
+                    name: 'Température maximale',
+                    data: [29, 28, 22, 22, 23, 27, 23]
+                }]
+            });
+        });
+    </script>
+
+    <script src="~/Scripts/highcharts.js"></script>
+
+
+
+</body>
+</html>
