@@ -9,11 +9,13 @@ namespace MeteoWidget.Models
     {
         public int[] minTemp;
         public int[] maxTemp;
+        public String minTempStr;
 
         public TameteoApi()
         {
             minTemp = new int[5];
             maxTemp = new int[5];
+            minTempStr = "";
         }
     }
 }

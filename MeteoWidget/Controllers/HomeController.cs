@@ -66,6 +66,7 @@ namespace MeteoWidget.Controllers
 
             //Read the content of the API return XML
             String allValues = "";
+            TameteoApi tameteoApi = new TameteoApi();
             XmlNodeList dataElements = response.GetElementsByTagName("data");
             for (int i = 0; i <= dataElements.Count - 1; i++)
             {
@@ -73,9 +74,22 @@ namespace MeteoWidget.Controllers
                 for (int j = 0; j <= forecastElements.Count - 1; j++) {
                     allValues += forecastElements[j].Attributes[1].Value + "; ";
                 }
+                switch (i)
+                {
+                    case 0:
+                        //Min temp
+                        tameteoApi.minTempStr = allValues;
+                        break;
+                    case 1:
+                        //Max temp
+                        break;
+                    default:
+                        Console.WriteLine("Default case");
+                        break;
+                }
+
             }
 
-            TameteoApi tameteoApi = new TameteoApi();
             //tameteoApi.minTemp = new int[3];
             //tameteoApi.maxTemp = new int[3];
             tameteoApi.minTemp[0] = 1;
