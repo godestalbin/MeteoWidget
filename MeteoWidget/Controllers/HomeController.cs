@@ -72,8 +72,10 @@ namespace MeteoWidget.Controllers
             {
                 XmlNodeList forecastElements = dataElements[i].ChildNodes;
                 for (int j = 0; j <= forecastElements.Count - 1; j++) {
-                    allValues += forecastElements[j].Attributes[1].Value + "; ";
+                    allValues += forecastElements[j].Attributes[1].Value + ", ";
                 }
+                //Remove last semicolon+space
+                allValues = allValues.Remove(allValues.Length - 2);
                 switch (i)
                 {
                     case 0:
@@ -87,6 +89,7 @@ namespace MeteoWidget.Controllers
                         Console.WriteLine("Default case");
                         break;
                 }
+                allValues = "";
 
             }
 
