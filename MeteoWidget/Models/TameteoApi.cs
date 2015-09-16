@@ -11,11 +11,22 @@ namespace MeteoWidget.Models
         public int[] maxTemp;
         public String minTempStr;
 
+        public String dayTime;
+        public String temp;
+        public String rain;
+        public String wind;
+        public String pressure;
+
         public TameteoApi()
         {
             minTemp = new int[5];
             maxTemp = new int[5];
             minTempStr = "";
+            dayTime = "";
+            temp = "";
+            rain = "";
+            wind = "";
+            pressure = "";
         }
     }
 }

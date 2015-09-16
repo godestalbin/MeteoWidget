@@ -23,7 +23,10 @@
 
     <div style="border:dashed; border-width:thick;">
     </div>
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="temp" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="rain" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="wind" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="pressure" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
     @Scripts.Render("~/bundles/jquery")
@@ -39,18 +42,17 @@
     </script>
     <script type="text/javascript">
         $(function () {
-            $('#container').highcharts({
+            $('#temp').highcharts({
                 title: {
-                    text: 'Temperature maximale et minimales à Wattignies',
+                    text: 'Temperature à Wattignies',
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Source: tameteo.com',
+                    text: 'Meteo widget by GuyO',
                     x: -20
                 },
                 xAxis: {
-                    categories: ['Vendredi', 'Samedi', 'Dimanche', 'Lundi', 'Mardi', 'Mercredi',
-                        'Jeudi']
+                    categories: [ @Html.Raw(@Model.dayTime) ]
                 },
                 yAxis: {
                     title: {
@@ -72,15 +74,115 @@
                     borderWidth: 0
                 },
                 series: [{
-                    name: 'Température minimale',
-                    data: [ @Model.minTempStr ]
+                    name: 'Températuree',
+                    data: [ @Model.temp ]
                     //data: [ @Model.minTemp[1], @Model.minTemp[2] ] //[15, 14, 13, 12, 14, 16, 14]
-                }, {
-                    name: 'Température maximale',
-                    data: [29, 28, 22, 22, 23, 27, 23]
                 }]
             });
         });
+
+        $(function () {
+    $('#rain').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Rain'
+        },
+        xAxis: {
+            categories: [ @Html.Raw(@Model.dayTime) ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Rainfall (mm)'
+            }
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Rain',
+            data: [@Model.rain]
+
+        }]
+    });
+});
+
+        $(function () {
+            $('#wind').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Rain'
+                },
+                xAxis: {
+                    categories: [ @Html.Raw(@Model.dayTime) ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Wind (km)'
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Wind',
+                    data: [@Model.wind]
+
+                }]
+            });
+        });
+
+
+        $(function () {
+            $('#pressure').highcharts({
+                title: {
+                    text: 'Pression atmosphérique à Wattignies',
+                    x: -20 //center
+                },
+                xAxis: {
+                    categories: [ @Html.Raw(@Model.dayTime) ]
+                },
+                yAxis: {
+                    title: {
+                        text: 'Pression hPa'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '°C'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Pression atmosphérique',
+                    data: [ @Model.pressure ]
+                }]
+            });
+        });
+
+
+
     </script>
 
     <script src="~/Scripts/highcharts.js"></script>

@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Net;
 using MeteoWidget.Models;
+using System.Globalization;
 
 namespace MeteoWidget.Controllers
 {
@@ -22,18 +23,6 @@ namespace MeteoWidget.Controllers
             ViewBag.Title = "Home Page";
 
             return View();
-        }
-
-        public static XDocument GetMeteoApi()
-        {
-            Uri uri = new Uri("http://api.tameteo.com/index.php?api_lang=fr&localidad=25339&affiliate_id=fu7tkep336jx");
-            WebRequest request = WebRequest.Create(uri);
-            //request.Method = "GET";
-            //request.Method = "PUT";
-            Stream stream = request.GetRequestStream();
-            //var stream = response.GetResponseStream();
-            XmlReader xmlReader = XmlReader.Create(stream);
-            return XDocument.Load(xmlReader);
         }
 
         //https://msdn.microsoft.com/en-us/library/hh304484.aspx
@@ -59,6 +48,66 @@ namespace MeteoWidget.Controllers
         }
 
         public ActionResult Meteo()
+        {
+            //Query Open Weather api with city code for Wattignies
+            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=6454427&mode=xml");
+
+            TameteoApi tameteoApi = new TameteoApi();
+            XmlNodeList dataElements = response.GetElementsByTagName("time");
+            DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
+            System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
+            for (int i = 0; i <= dataElements.Count - 1; i++)
+            {
+                //dataElements[i].Attributes[0].Value
+                //Convert the datetime string to Datetime
+                DateTime convertedDate = DateTime.Parse(dataElements[i].Attributes[0].Value);
+                dayTime.Append("'");
+                if (previousDate.Day != convertedDate.Day || previousDate.Month != convertedDate.Month || previousDate.Year != convertedDate.Year) {
+                    String weekDay = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
+                    weekDay = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, 1);
+                    dayTime.Append(weekDay + " ");
+                }
+                //Add time and minutes with leading zeroes
+                dayTime.Append(convertedDate.Hour + ":" + convertedDate.Minute.ToString("D2") + "', ");
+                previousDate = convertedDate;
+                XmlNodeList forecastElements = dataElements[i].ChildNodes;
+                //for (int j = 0; j <= forecastElements.Count - 1; j++)
+                //{
+                //allValues += forecastElements[j].Attributes[1].Value + ", ";
+                if (forecastElements[1].Attributes.Count > 0)
+                    tameteoApi.rain = tameteoApi.rain + forecastElements[1].Attributes[1].Value + ", ";
+                else
+                    tameteoApi.rain = tameteoApi.rain + "0, ";
+                Decimal pressure = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
+                tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
+                //Temp is in Kelvin we need to convert by substracting -272.15
+                Decimal temp = System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 272.15m;
+                tameteoApi.temp = tameteoApi.temp + temp.ToString(new CultureInfo("en-US")) + ", ";
+                tameteoApi.pressure = tameteoApi.pressure + forecastElements[5].Attributes[1].Value + ", ";
+                //        //0 = < symbol number = "500" name = "light rain" var = "10d" />
+                //        //1 = < precipitation unit = "3h" value = "2.96" type = "rain" />
+                //        //2 = < windDirection deg = "216" code = "SW" name = "Southwest" />
+                //        //3 = < windSpeed mps = "8.72" name = "Fresh Breeze" />
+                //        //4 = < temperature unit = "celsius" value = "292.03" min = "290.833" max = "292.03" />
+                //        //5 = < pressure unit = "hPa" value = "995.31" />
+                //        //6 = < humidity value = "89" unit = "%" />
+                //        //7 = < clouds value = "scattered clouds" all = "44" unit = "%" />
+            }
+            //Remove last semicolon+space
+            tameteoApi.rain = tameteoApi.rain.Remove(tameteoApi.rain.Length - 2);
+            tameteoApi.wind = tameteoApi.wind.Remove(tameteoApi.wind.Length - 2);
+            tameteoApi.temp = tameteoApi.temp.Remove(tameteoApi.temp.Length - 2);
+            tameteoApi.pressure = tameteoApi.pressure.Remove(tameteoApi.pressure.Length - 2);
+
+            tameteoApi.dayTime = dayTime.ToString();
+            tameteoApi.dayTime = tameteoApi.dayTime.Remove(tameteoApi.dayTime.Length - 2);
+
+            ViewBag.Title = "Home Page";
+
+            return View(tameteoApi);
+        }
+
+        public ActionResult Meteov0()
         {
             //Test XML serialization
             //XDocument xDoc = GetMeteoApi();
@@ -107,31 +156,6 @@ namespace MeteoWidget.Controllers
             return View(tameteoApi);
         }
 
-        protected T FromXml<T>(String xml)
-        {
-            T returnedXmlClass = default(T);
-
-            try
-            {
-                using (TextReader reader = new StringReader(xml))
-                {
-                    try
-                    {
-                        returnedXmlClass =
-                            (T)new XmlSerializer(typeof(T)).Deserialize(reader);
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // String passed is not XML, simply return defaultXmlClass
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-
-            return returnedXmlClass;
-        }
 
     }
 }
