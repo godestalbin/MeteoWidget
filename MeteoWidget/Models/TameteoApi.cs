@@ -12,6 +12,8 @@ namespace MeteoWidget.Models
         public String minTempStr;
 
         public String dayTime;
+        public String[] dayStart;
+        public String weekEnd;
         public String temp;
         public String rain;
         public String wind;
@@ -21,8 +23,10 @@ namespace MeteoWidget.Models
         {
             minTemp = new int[5];
             maxTemp = new int[5];
+            dayStart = new String[7];
             minTempStr = "";
             dayTime = "";
+            weekEnd = "";
             temp = "";
             rain = "";
             wind = "";

@@ -56,6 +56,7 @@ namespace MeteoWidget.Controllers
             XmlNodeList dataElements = response.GetElementsByTagName("time");
             DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
             System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
+            int dayCounter = 0;
             for (int i = 0; i <= dataElements.Count - 1; i++)
             {
                 //dataElements[i].Attributes[0].Value
@@ -66,6 +67,12 @@ namespace MeteoWidget.Controllers
                     String weekDay = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
                     weekDay = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, 1);
                     dayTime.Append(weekDay + " ");
+                    //Register day to show a separation (plotLines)
+                    tameteoApi.dayStart[dayCounter] = (i - 0.5m).ToString(new System.Globalization.CultureInfo("en-US"));
+                    dayCounter += 1;
+                    //Register the weekend to be able to display them with grey (plotBands)
+                    if (weekDay == "Sa")
+                        tameteoApi.weekEnd = (i-0.5).ToString(new System.Globalization.CultureInfo("en-US"));
                 }
                 //Add time and minutes with leading zeroes
                 dayTime.Append(convertedDate.Hour + ":" + convertedDate.Minute.ToString("D2") + "', ");
@@ -81,7 +88,8 @@ namespace MeteoWidget.Controllers
                 Decimal pressure = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
                 tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
                 //Temp is in Kelvin we need to convert by substracting -272.15
-                Decimal temp = System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 272.15m;
+                //We also round to 2 decimal
+                Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 272.15m, 0);
                 tameteoApi.temp = tameteoApi.temp + temp.ToString(new CultureInfo("en-US")) + ", ";
                 tameteoApi.pressure = tameteoApi.pressure + forecastElements[5].Attributes[1].Value + ", ";
                 //        //0 = < symbol number = "500" name = "light rain" var = "10d" />
@@ -93,6 +101,8 @@ namespace MeteoWidget.Controllers
                 //        //6 = < humidity value = "89" unit = "%" />
                 //        //7 = < clouds value = "scattered clouds" all = "44" unit = "%" />
             }
+            //Register last day to show a separation (plotLines)
+            tameteoApi.dayStart[dayCounter] = (39.5m).ToString(new System.Globalization.CultureInfo("en-US"));
             //Remove last semicolon+space
             tameteoApi.rain = tameteoApi.rain.Remove(tameteoApi.rain.Length - 2);
             tameteoApi.wind = tameteoApi.wind.Remove(tameteoApi.wind.Length - 2);

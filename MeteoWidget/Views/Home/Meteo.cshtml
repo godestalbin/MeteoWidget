@@ -21,11 +21,14 @@
     </div>
     </div><p id="updatetime" style='font-family:Arial; font-size:small;'></p>
 
-    <div style="border:dashed; border-width:thick;">
-    </div>
+    <div style="border:dashed; border-width:thin;"></div>
     <div id="temp" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    <div id="rain" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    <div id="wind" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div style="border:dashed; border-width:thin;"></div>
+    <div>
+        <div id="rain" style="float:left; width: 600px; height: 300px; margin: 0 auto"></div>
+        <div id="wind" style="float:left; width: 600px; height: 300px; margin: 0 auto"></div>
+    </div>
+    <div style="border:dashed; border-width:thin;"></div>
     <div id="pressure" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
@@ -45,14 +48,55 @@
             $('#temp').highcharts({
                 title: {
                     text: 'Temperature à Wattignies',
-                    x: -20 //center
-                },
+                    //x: -20 //center
+            },
                 subtitle: {
                     text: 'Meteo widget by GuyO',
                     x: -20
                 },
                 xAxis: {
-                    categories: [ @Html.Raw(@Model.dayTime) ]
+                    gridLineWidth: 1,
+                    categories: [ @Html.Raw(@Model.dayTime) ],
+                    plotBands:[{
+                        from: @Model.weekEnd,
+                        to: @Model.weekEnd + 16,
+                        color:'rgba(156,156,156,.25)' //light grey
+                    }],
+                    plotLines: [{
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[0] // Position, you'll have to translate this to the values on your x axis
+                        },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[1] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[2] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[3] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[4] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[5] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[6] // Position, you'll have to translate this to the values on your x axis
+                    }]
                 },
                 yAxis: {
                     title: {
@@ -64,6 +108,14 @@
                         color: '#808080'
                     }]
                 },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        enableMouseTracking: true
+                    }
+                },
                 tooltip: {
                     valueSuffix: '°C'
                 },
@@ -74,10 +126,11 @@
                     borderWidth: 0
                 },
                 series: [{
-                    name: 'Températuree',
-                    data: [ @Model.temp ]
+                    showInLegend: false,
+                    name: 'Température',
+                    data: [ @Model.temp ],
                     //data: [ @Model.minTemp[1], @Model.minTemp[2] ] //[15, 14, 13, 12, 14, 16, 14]
-                }]
+        }]
             });
         });
 
@@ -91,7 +144,47 @@
         },
         xAxis: {
             categories: [ @Html.Raw(@Model.dayTime) ],
-            crosshair: true
+            crosshair: true,
+            plotBands:[{
+                from: @Model.weekEnd,
+                to: @Model.weekEnd + 16,
+                color:'rgba(156,156,156,.25)' //light grey
+            }],
+            plotLines: [{
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[0] // Position, you'll have to translate this to the values on your x axis
+            },
+            {
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[1] // Position, you'll have to translate this to the values on your x axis
+            },
+            {
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[2] // Position, you'll have to translate this to the values on your x axis
+            },
+            {
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[3] // Position, you'll have to translate this to the values on your x axis
+            },
+            {
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[4] // Position, you'll have to translate this to the values on your x axis
+            },
+            {
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[5] // Position, you'll have to translate this to the values on your x axis
+            },
+            {
+                color: '#373E40', //Dark grey
+                width: 3,
+                value: @Model.dayStart[6] // Position, you'll have to translate this to the values on your x axis
+            }]
         },
         yAxis: {
             min: 0,
@@ -106,6 +199,7 @@
             }
         },
         series: [{
+            showInLegend: false,
             name: 'Rain',
             data: [@Model.rain]
 
@@ -119,11 +213,51 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Rain'
+                    text: 'Wind'
                 },
                 xAxis: {
                     categories: [ @Html.Raw(@Model.dayTime) ],
-                    crosshair: true
+                    crosshair: true,
+                    plotBands:[{
+                        from: @Model.weekEnd,
+                        to: @Model.weekEnd + 16,
+                        color:'rgba(156,156,156,.25)' //light grey
+                    }],
+                    plotLines: [{
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[0] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[1] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[2] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[3] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[4] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[5] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[6] // Position, you'll have to translate this to the values on your x axis
+                    }]
                 },
                 yAxis: {
                     min: 0,
@@ -138,6 +272,7 @@
                     }
                 },
                 series: [{
+                    showInLegend: false,
                     name: 'Wind',
                     data: [@Model.wind]
 
@@ -153,7 +288,47 @@
                     x: -20 //center
                 },
                 xAxis: {
-                    categories: [ @Html.Raw(@Model.dayTime) ]
+                    categories: [ @Html.Raw(@Model.dayTime) ],
+                    plotBands:[{
+                        from: @Model.weekEnd,
+                        to: @Model.weekEnd + 16,
+                        color:'rgba(156,156,156,.25)' //light grey
+                    }],
+                    plotLines: [{
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[0] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[1] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[2] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[3] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[4] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[5] // Position, you'll have to translate this to the values on your x axis
+                    },
+                    {
+                        color: '#373E40', //Dark grey
+                        width: 3,
+                        value: @Model.dayStart[6] // Position, you'll have to translate this to the values on your x axis
+                    }]
                 },
                 yAxis: {
                     title: {
@@ -175,6 +350,7 @@
                     borderWidth: 0
                 },
                 series: [{
+                    showInLegend: false,
                     name: 'Pression atmosphérique',
                     data: [ @Model.pressure ]
                 }]
