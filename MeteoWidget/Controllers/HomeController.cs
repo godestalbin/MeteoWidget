@@ -62,9 +62,15 @@ namespace MeteoWidget.Controllers
                 //dataElements[i].Attributes[0].Value
                 //Convert the datetime string to Datetime
                 DateTime convertedDate = DateTime.Parse(dataElements[i].Attributes[0].Value);
+                //Initialize the first day
+                if (i == 0)
+                {
+                    tameteoApi.weekDay[dayCounter] = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
+                }
                 dayTime.Append("'");
                 if (previousDate.Day != convertedDate.Day || previousDate.Month != convertedDate.Month || previousDate.Year != convertedDate.Year) {
                     String weekDay = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
+                    tameteoApi.weekDay[dayCounter + 1] = weekDay;
                     weekDay = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, 1);
                     dayTime.Append(weekDay + " ");
                     //Register day to show a separation (plotLines)
@@ -73,6 +79,8 @@ namespace MeteoWidget.Controllers
                     //Register the weekend to be able to display them with grey (plotBands)
                     if (weekDay == "Sa")
                         tameteoApi.weekEnd = (i-0.5).ToString(new System.Globalization.CultureInfo("en-US"));
+                    if (weekDay == "Di" && tameteoApi.weekEnd == "")
+                        tameteoApi.weekEnd = (i - 10.5).ToString(new System.Globalization.CultureInfo("en-US"));
                 }
                 //Add time and minutes with leading zeroes
                 dayTime.Append(convertedDate.Hour + ":" + convertedDate.Minute.ToString("D2") + "', ");
@@ -118,54 +126,54 @@ namespace MeteoWidget.Controllers
             return View(tameteoApi);
         }
 
-        public ActionResult Meteov0()
-        {
-            //Test XML serialization
-            //XDocument xDoc = GetMeteoApi();
-            XmlDocument response = GetXmlResponse("http://api.tameteo.com/index.php?api_lang=fr&localidad=25339&affiliate_id=fu7tkep336jx");
+        //public ActionResult Meteov0()
+        //{
+        //    //Test XML serialization
+        //    //XDocument xDoc = GetMeteoApi();
+        //    XmlDocument response = GetXmlResponse("http://api.tameteo.com/index.php?api_lang=fr&localidad=25339&affiliate_id=fu7tkep336jx");
 
-            //Read the content of the API return XML
-            String allValues = "";
-            TameteoApi tameteoApi = new TameteoApi();
-            XmlNodeList dataElements = response.GetElementsByTagName("data");
-            for (int i = 0; i <= dataElements.Count - 1; i++)
-            {
-                XmlNodeList forecastElements = dataElements[i].ChildNodes;
-                for (int j = 0; j <= forecastElements.Count - 1; j++) {
-                    allValues += forecastElements[j].Attributes[1].Value + ", ";
-                }
-                //Remove last semicolon+space
-                allValues = allValues.Remove(allValues.Length - 2);
-                switch (i)
-                {
-                    case 0:
-                        //Min temp
-                        tameteoApi.minTempStr = allValues;
-                        break;
-                    case 1:
-                        //Max temp
-                        break;
-                    default:
-                        Console.WriteLine("Default case");
-                        break;
-                }
-                allValues = "";
+        //    //Read the content of the API return XML
+        //    String allValues = "";
+        //    TameteoApi tameteoApi = new TameteoApi();
+        //    XmlNodeList dataElements = response.GetElementsByTagName("data");
+        //    for (int i = 0; i <= dataElements.Count - 1; i++)
+        //    {
+        //        XmlNodeList forecastElements = dataElements[i].ChildNodes;
+        //        for (int j = 0; j <= forecastElements.Count - 1; j++) {
+        //            allValues += forecastElements[j].Attributes[1].Value + ", ";
+        //        }
+        //        //Remove last semicolon+space
+        //        allValues = allValues.Remove(allValues.Length - 2);
+        //        switch (i)
+        //        {
+        //            case 0:
+        //                //Min temp
+        //                tameteoApi.minTempStr = allValues;
+        //                break;
+        //            case 1:
+        //                //Max temp
+        //                break;
+        //            default:
+        //                Console.WriteLine("Default case");
+        //                break;
+        //        }
+        //        allValues = "";
 
-            }
+        //    }
 
-            //tameteoApi.minTemp = new int[3];
-            //tameteoApi.maxTemp = new int[3];
-            tameteoApi.minTemp[0] = 1;
-            tameteoApi.minTemp[1] = 2;
-            tameteoApi.minTemp[2] = 3;
-            tameteoApi.maxTemp[0] = 4;
-            tameteoApi.maxTemp[1] = 5;
-            tameteoApi.maxTemp[2] = 6;
+        //    //tameteoApi.minTemp = new int[3];
+        //    //tameteoApi.maxTemp = new int[3];
+        //    tameteoApi.minTemp[0] = 1;
+        //    tameteoApi.minTemp[1] = 2;
+        //    tameteoApi.minTemp[2] = 3;
+        //    tameteoApi.maxTemp[0] = 4;
+        //    tameteoApi.maxTemp[1] = 5;
+        //    tameteoApi.maxTemp[2] = 6;
 
-            ViewBag.Title = "Home Page";
+        //    ViewBag.Title = "Home Page";
 
-            return View(tameteoApi);
-        }
+        //    return View(tameteoApi);
+        //}
 
 
     }

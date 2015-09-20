@@ -7,12 +7,13 @@ namespace MeteoWidget.Models
 {
     public class TameteoApi
     {
-        public int[] minTemp;
-        public int[] maxTemp;
-        public String minTempStr;
+        //public int[] minTemp;
+        //public int[] maxTemp;
+        //public String minTempStr;
 
         public String dayTime;
         public String[] dayStart;
+        public String[] weekDay;
         public String weekEnd;
         public String temp;
         public String rain;
@@ -21,10 +22,11 @@ namespace MeteoWidget.Models
 
         public TameteoApi()
         {
-            minTemp = new int[5];
-            maxTemp = new int[5];
+            //minTemp = new int[5];
+            //maxTemp = new int[5];
+            //minTempStr = "";
             dayStart = new String[7];
-            minTempStr = "";
+            weekDay = new String[7];
             dayTime = "";
             weekEnd = "";
             temp = "";

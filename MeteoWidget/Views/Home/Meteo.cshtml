@@ -58,7 +58,51 @@
                         from: @Model.weekEnd,
                         to: @Model.weekEnd + 16,
                         color:'rgba(156,156,156,.25)' //light grey
-                    }],
+                    },
+                    {
+                        from: @Model.dayStart[0],
+                        to: @Model.dayStart[1],
+                        label: {
+                            text: '@Model.weekDay[1]',
+                        }
+                    },
+                    {
+                        from: @Model.dayStart[1],
+                        to: @Model.dayStart[2],
+                        label: {
+                            text: '@Model.weekDay[2]',
+                        }
+                    },
+                    {
+                        from: @Model.dayStart[2],
+                        to: @Model.dayStart[3],
+                        label: {
+                            text: '@Model.weekDay[3]',
+                        }
+                    },
+                    {
+                        from: @Model.dayStart[3],
+                        to: @Model.dayStart[4],
+                        label: {
+                            text: '@Model.weekDay[4]',
+                        }
+                    },
+                    {
+                        from: @Model.dayStart[4],
+                        to: @Model.dayStart[5],
+                        label: {
+                            text: '@Model.weekDay[5]',
+                        }
+                    },
+                    {
+                        from: @Model.dayStart[5],
+                        to: @Model.dayStart[6],
+                        label: {
+                            text: '@Model.weekDay[6]',
+                        }
+                    }
+
+                    ],
                     plotLines: [{
                         color: '#373E40', //Dark grey
                         width: 3,
@@ -125,8 +169,7 @@
                 series: [{
                     showInLegend: false,
                     name: 'Température',
-                    data: [ @Model.temp ],
-                    //data: [ @Model.minTemp[1], @Model.minTemp[2] ] //[15, 14, 13, 12, 14, 16, 14]
+                    data: [ @Model.temp ]
         }]
             });
         });
