@@ -118,8 +118,9 @@ namespace MeteoWidget.Controllers
                 //        //7 = < clouds value = "scattered clouds" all = "44" unit = "%" />
             }
             //Register last day to show a separation (plotLines)
-            tameteoApi.dayStart[dayCounter] = (39.5m).ToString(new System.Globalization.CultureInfo("en-US"));
-            tameteoApi.dayStart[6] = (36.5).ToString(new System.Globalization.CultureInfo("en-US"));
+            if (tameteoApi.dayStart[dayCounter] == "")
+                tameteoApi.dayStart[dayCounter] = (39.5m).ToString(new System.Globalization.CultureInfo("en-US"));
+            tameteoApi.dayStart[6] = (39.5).ToString(new System.Globalization.CultureInfo("en-US"));
             //Remove last semicolon+space
             tameteoApi.rain = tameteoApi.rain.Remove(tameteoApi.rain.Length - 2);
             tameteoApi.wind = tameteoApi.wind.Remove(tameteoApi.wind.Length - 2);

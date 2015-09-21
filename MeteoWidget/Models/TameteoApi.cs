@@ -25,7 +25,7 @@ namespace MeteoWidget.Models
             //minTemp = new int[5];
             //maxTemp = new int[5];
             //minTempStr = "";
-            dayStart = new String[7];
+            dayStart = new String[7] { "", "", "", "", "", "", "" };
             weekDay = new String[7];
             dayTime = "";
             weekEnd = new String[2] { "", "" };

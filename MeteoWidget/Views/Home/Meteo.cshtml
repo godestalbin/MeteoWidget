@@ -64,8 +64,7 @@
                         to: @Model.dayStart[1],
                         label: {
                             text: '@Model.weekDay[1]',
-                            verticalAlign: 'bottom',
-                            y: -10
+                            y: -5
                         }
                     },
                     {
@@ -73,17 +72,15 @@
                         to: @Model.dayStart[2],
                         label: {
                             text: '@Model.weekDay[2]',
-                            verticalAlign: 'bottom',
-                            y: -10
-                        }
+                            y: -5
+        }
                     },
                     {
                         from: @Model.dayStart[2],
                         to: @Model.dayStart[3],
                         label: {
                             text: '@Model.weekDay[3]',
-                            verticalAlign: 'bottom',
-                            y: -10
+                            y: -5
                         }
                     },
                     {
@@ -91,8 +88,7 @@
                         to: @Model.dayStart[4],
                         label: {
                             text: '@Model.weekDay[4]',
-                            verticalAlign: 'bottom',
-                            y: -10
+                            y: -5
                         }
                     },
                     {
@@ -100,8 +96,7 @@
                         to: @Model.dayStart[5],
                         label: {
                             text: '@Model.weekDay[5]',
-                            verticalAlign: 'bottom',
-                            y: -10
+                            y: -5
                         }
                     },
                     {
@@ -109,8 +104,7 @@
                         to: @Model.dayStart[6],
                         label: {
                             text: '@Model.weekDay[6]',
-                            verticalAlign: 'bottom',
-                            y: -10
+                            y: -5
                         }
                     }
 
@@ -151,26 +145,75 @@
                         value: @Model.dayStart[6] // Position, you'll have to translate this to the values on your x axis
                     }]
                 },
-                yAxis: {
+                yAxis: [{
                     title: {
-                        text: 'Temperature (°C)'
+                        text: 'Temperature (°C)',
+                        style: {
+                            color: '#FF4D00'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: '#FF4D00'
+                        }
                     },
                     plotLines: [{
                         value: 0,
-                        width: 1,
-                        color: '#808080'
+                        width: 1
                     }]
                 },
+                { // Secondary yAxis
+                    gridLineWidth: 0,
+                    title: {
+                        text: 'Rainfall (mm)',
+                        style: {
+                            color: 'rgba(0,30,255,.75)'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: 'rgba(0,30,255,.75)'
+                        }
+                    },
+                    opposite: true},
+                    { // Tertiary yAxis
+                        gridLineWidth: 0,
+                        title: {
+                            text: 'Wind (km/h)',
+                            style: {
+                                color: '#8FC496'
+                            }
+                        },
+                        labels: {
+                            style: {
+                                color: '#8FC496'
+                            }
+                        },
+                        opposite: true},
+                        { // 4th yAxis
+                            gridLineWidth: 0,
+                            title: {
+                                text: 'Pression atmosphérique (hPa)',
+                                style: {
+                                    color: 'rgba(156,156,156,.75)'
+                                }
+                            },
+                            labels: {
+                                style: {
+                                    color: 'rgba(156,156,156,.75)'
+                                }
+                            }}
+                ],
                 plotOptions: {
                     line: {
                         dataLabels: {
                             enabled: true
                         },
                         enableMouseTracking: true
+                    },
+                    series: {
+                        fillOpacity: 0.2 //Set transparency for area for wind
                     }
-                },
-                tooltip: {
-                    valueSuffix: '°C'
                 },
                 legend: {
                     layout: 'vertical',
@@ -181,8 +224,49 @@
                 series: [{
                     showInLegend: false,
                     name: 'Température',
-                    data: [ @Model.temp ]
-        }]
+                    color: '#FF4D00',
+                    data: [ @Model.temp ],
+                    tooltip: {
+                        valueSuffix: ' °C'
+                    },
+                    },
+                {
+                    type: 'column',
+                    yAxis: 1,
+                    showInLegend: false,
+                    color: 'rgba(0,30,255,.25)',
+                    name: 'Rain',
+                    data: [@Model.rain]
+
+                },
+                {
+                    name: 'Wind',
+                    type: 'area',
+                    yAxis: 2,
+                    showInLegend: false,
+                    color: 'rgba(0,255,0,.5)',
+                    marker: {
+                        enabled: false
+                    },
+                    data: [@Model.wind]
+
+                },
+                {
+                    name: 'Pression',
+                    //type: 'column',
+                    yAxis: 3,
+                    showInLegend: false,
+                    dataLabels: {
+                        enabled: false
+                    },
+                    color: 'rgba(156,156,156,.75)',
+                    dashStyle: 'ShortDot',
+                    marker: {
+                        enabled: false
+                    },
+                    data: [@Model.pressure]
+                }
+                ]
             });
         });
 
