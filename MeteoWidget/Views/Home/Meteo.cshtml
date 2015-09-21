@@ -55,8 +55,8 @@
                     gridLineWidth: 1,
                     categories: [ @Html.Raw(@Model.dayTime) ],
                     plotBands:[{
-                        from: @Model.weekEnd,
-                        to: @Model.weekEnd + 16,
+                        from: @Model.weekEnd[0], //Weekend start
+                        to: @Model.weekEnd[1], //Weekend end
                         color:'rgba(156,156,156,.25)' //light grey
                     },
                     {
@@ -64,6 +64,8 @@
                         to: @Model.dayStart[1],
                         label: {
                             text: '@Model.weekDay[1]',
+                            verticalAlign: 'bottom',
+                            y: -10
                         }
                     },
                     {
@@ -71,6 +73,8 @@
                         to: @Model.dayStart[2],
                         label: {
                             text: '@Model.weekDay[2]',
+                            verticalAlign: 'bottom',
+                            y: -10
                         }
                     },
                     {
@@ -78,6 +82,8 @@
                         to: @Model.dayStart[3],
                         label: {
                             text: '@Model.weekDay[3]',
+                            verticalAlign: 'bottom',
+                            y: -10
                         }
                     },
                     {
@@ -85,6 +91,8 @@
                         to: @Model.dayStart[4],
                         label: {
                             text: '@Model.weekDay[4]',
+                            verticalAlign: 'bottom',
+                            y: -10
                         }
                     },
                     {
@@ -92,6 +100,8 @@
                         to: @Model.dayStart[5],
                         label: {
                             text: '@Model.weekDay[5]',
+                            verticalAlign: 'bottom',
+                            y: -10
                         }
                     },
                     {
@@ -99,6 +109,8 @@
                         to: @Model.dayStart[6],
                         label: {
                             text: '@Model.weekDay[6]',
+                            verticalAlign: 'bottom',
+                            y: -10
                         }
                     }
 
@@ -186,8 +198,8 @@
             categories: [ @Html.Raw(@Model.dayTime) ],
             crosshair: true,
             plotBands:[{
-                from: @Model.weekEnd,
-                to: @Model.weekEnd + 16,
+                from: @Model.weekEnd[0], //Weekend start
+                to: @Model.weekEnd[1], //Weekend end
                 color:'rgba(156,156,156,.25)' //light grey
             }],
             plotLines: [{
@@ -259,8 +271,8 @@
                     categories: [ @Html.Raw(@Model.dayTime) ],
                     crosshair: true,
                     plotBands:[{
-                        from: @Model.weekEnd,
-                        to: @Model.weekEnd + 16,
+                        from: @Model.weekEnd[0], //Weekend start
+                        to: @Model.weekEnd[1], //Weekend end
                         color:'rgba(156,156,156,.25)' //light grey
                     }],
                     plotLines: [{
@@ -331,8 +343,8 @@
                     gridLineWidth: 1,
                     categories: [ @Html.Raw(@Model.dayTime) ],
                     plotBands:[{
-                        from: @Model.weekEnd,
-                        to: @Model.weekEnd + 16,
+                        from: @Model.weekEnd[0], //Weekend start
+                        to: @Model.weekEnd[1], //Weekend end
                         color:'rgba(156,156,156,.25)' //light grey
                     }],
                     plotLines: [{

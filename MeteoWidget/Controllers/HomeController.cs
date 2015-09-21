@@ -62,25 +62,33 @@ namespace MeteoWidget.Controllers
                 //dataElements[i].Attributes[0].Value
                 //Convert the datetime string to Datetime
                 DateTime convertedDate = DateTime.Parse(dataElements[i].Attributes[0].Value);
+                String weekDay = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
                 //Initialize the first day
                 if (i == 0)
                 {
-                    tameteoApi.weekDay[dayCounter] = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
+                    //tameteoApi.weekDay[dayCounter] = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, weekDay.Length - 1);
                 }
+                //Set begining of weekend if not set yet
+                if (weekDay == "Sa" && tameteoApi.weekEnd[0] == "")
+                    tameteoApi.weekEnd[0] = (i - 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
+                //Set end of weekend if not set yet
+                if (weekDay == "Lu" && tameteoApi.weekEnd[1] == "")
+                    tameteoApi.weekEnd[1] = (i + 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
+
                 dayTime.Append("'");
+                //We moved to a new day
                 if (previousDate.Day != convertedDate.Day || previousDate.Month != convertedDate.Month || previousDate.Year != convertedDate.Year) {
-                    String weekDay = convertedDate.ToString("dddd", new System.Globalization.CultureInfo("fr-FR"));
-                    tameteoApi.weekDay[dayCounter + 1] = weekDay;
+                    tameteoApi.weekDay[dayCounter + 1] = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, weekDay.Length - 1);
                     weekDay = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, 1);
                     dayTime.Append(weekDay + " ");
                     //Register day to show a separation (plotLines)
                     tameteoApi.dayStart[dayCounter] = (i - 0.5m).ToString(new System.Globalization.CultureInfo("en-US"));
                     dayCounter += 1;
                     //Register the weekend to be able to display them with grey (plotBands)
-                    if (weekDay == "Sa")
-                        tameteoApi.weekEnd = (i-0.5).ToString(new System.Globalization.CultureInfo("en-US"));
-                    if (weekDay == "Di" && tameteoApi.weekEnd == "")
-                        tameteoApi.weekEnd = (i - 10.5).ToString(new System.Globalization.CultureInfo("en-US"));
+                    //if (weekDay == "Sa")
+                    //    tameteoApi.weekEnd = (i-0.5).ToString(new System.Globalization.CultureInfo("en-US"));
+                    //if (weekDay == "Di" && tameteoApi.weekEnd == "")
+                    //    tameteoApi.weekEnd = (i - 10.5).ToString(new System.Globalization.CultureInfo("en-US"));
                 }
                 //Add time and minutes with leading zeroes
                 dayTime.Append(convertedDate.Hour + ":" + convertedDate.Minute.ToString("D2") + "', ");
@@ -120,7 +128,11 @@ namespace MeteoWidget.Controllers
 
             tameteoApi.dayTime = dayTime.ToString();
             tameteoApi.dayTime = tameteoApi.dayTime.Remove(tameteoApi.dayTime.Length - 2);
-
+            //In case there is no weekend to display
+            if (tameteoApi.weekEnd[0] == "")
+                tameteoApi.weekEnd[0] = "-20"; //Avoid to display weekend in visible part of the graph
+            if (tameteoApi.weekEnd[1] == "")
+                tameteoApi.weekEnd[1] = "-20"; //Avoid to display weekend in visible part of the graph
             ViewBag.Title = "Home Page";
 
             return View(tameteoApi);

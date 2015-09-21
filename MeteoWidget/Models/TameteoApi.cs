@@ -14,7 +14,7 @@ namespace MeteoWidget.Models
         public String dayTime;
         public String[] dayStart;
         public String[] weekDay;
-        public String weekEnd;
+        public String[] weekEnd;
         public String temp;
         public String rain;
         public String wind;
@@ -28,7 +28,7 @@ namespace MeteoWidget.Models
             dayStart = new String[7];
             weekDay = new String[7];
             dayTime = "";
-            weekEnd = "";
+            weekEnd = new String[2] { "", "" };
             temp = "";
             rain = "";
             wind = "";
