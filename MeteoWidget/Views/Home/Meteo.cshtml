@@ -57,7 +57,7 @@
                     plotBands:[{
                         from: @Model.weekEnd[0], //Weekend start
                         to: @Model.weekEnd[1], //Weekend end
-                        color:'rgba(156,156,156,.25)' //light grey
+                        color:'rgba(156,156,156,.1)' //light grey
                     },
                     {
                         from: @Model.dayStart[0],
@@ -229,15 +229,6 @@
                     tooltip: {
                         valueSuffix: ' °C'
                     },
-                    },
-                {
-                    type: 'column',
-                    yAxis: 1,
-                    showInLegend: false,
-                    color: 'rgba(0,30,255,.25)',
-                    name: 'Rain',
-                    data: [@Model.rain]
-
                 },
                 {
                     name: 'Wind',
@@ -249,6 +240,15 @@
                         enabled: false
                     },
                     data: [@Model.wind]
+
+                },
+                {
+                    type: 'column',
+                    yAxis: 1,
+                    showInLegend: false,
+                    color: 'rgba(0,30,255,.25)',
+                    name: 'Rain',
+                    data: [@Model.rain]
 
                 },
                 {

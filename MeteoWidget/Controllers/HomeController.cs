@@ -69,10 +69,10 @@ namespace MeteoWidget.Controllers
                     //tameteoApi.weekDay[dayCounter] = weekDay.First().ToString().ToUpper() + weekDay.Substring(1, weekDay.Length - 1);
                 }
                 //Set begining of weekend if not set yet
-                if (weekDay == "Sa" && tameteoApi.weekEnd[0] == "")
+                if (weekDay == "samedi" && tameteoApi.weekEnd[0] == "")
                     tameteoApi.weekEnd[0] = (i - 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
                 //Set end of weekend if not set yet
-                if (weekDay == "Lu" && tameteoApi.weekEnd[1] == "")
+                if (weekDay == "lundi" && tameteoApi.weekEnd[1] == "")
                     tameteoApi.weekEnd[1] = (i + 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
 
                 dayTime.Append("'");
@@ -131,9 +131,12 @@ namespace MeteoWidget.Controllers
             tameteoApi.dayTime = tameteoApi.dayTime.Remove(tameteoApi.dayTime.Length - 2);
             //In case there is no weekend to display
             if (tameteoApi.weekEnd[0] == "")
-                tameteoApi.weekEnd[0] = "-20"; //Avoid to display weekend in visible part of the graph
+                if (tameteoApi.weekEnd[1] == "")
+                    tameteoApi.weekEnd[0] = "50"; //Avoid to display weekend in visible part of the graph
+                else
+                    tameteoApi.weekEnd[0] = "-20";
             if (tameteoApi.weekEnd[1] == "")
-                tameteoApi.weekEnd[1] = "-20"; //Avoid to display weekend in visible part of the graph
+                tameteoApi.weekEnd[1] = "50"; //Avoid to display weekend in visible part of the graph
             ViewBag.Title = "Home Page";
 
             return View(tameteoApi);
