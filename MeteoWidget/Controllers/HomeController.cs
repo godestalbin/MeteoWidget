@@ -73,7 +73,7 @@ namespace MeteoWidget.Controllers
                     tameteoApi.weekEnd[0] = (i - 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
                 //Set end of weekend if not set yet
                 if (weekDay == "lundi" && tameteoApi.weekEnd[1] == "")
-                    tameteoApi.weekEnd[1] = (i + 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
+                    tameteoApi.weekEnd[1] = (i - 0.5).ToString(new System.Globalization.CultureInfo("en-US"));
 
                 dayTime.Append("'");
                 //We moved to a new day
@@ -94,19 +94,33 @@ namespace MeteoWidget.Controllers
                 dayTime.Append(convertedDate.Hour + ":" + convertedDate.Minute.ToString("D2") + "', ");
                 previousDate = convertedDate;
                 XmlNodeList forecastElements = dataElements[i].ChildNodes;
-                //for (int j = 0; j <= forecastElements.Count - 1; j++)
-                //{
-                //allValues += forecastElements[j].Attributes[1].Value + ", ";
+
+                //Symbol used to display weather icon
+                if ((convertedDate.Hour - 3) % 12 == 0)
+                {
+                    String weatherIcon = getWeatherIcon(Convert.ToInt32(forecastElements[0].Attributes[0].Value));
+                    tameteoApi.symbolName += "{y:32, weather:'" + forecastElements[0].Attributes[0].Value + "=" + forecastElements[0].Attributes[1].Value + "', marker:{symbol:'url(/Content/Images/" + weatherIcon + ")'}}, ";
+                }
+                else
+                    tameteoApi.symbolName += "{y:32, marker: { enabled: false}}, ";
+
+                //Rain
                 if (forecastElements[1].Attributes.Count > 0)
                     tameteoApi.rain = tameteoApi.rain + forecastElements[1].Attributes[1].Value + ", ";
                 else
                     tameteoApi.rain = tameteoApi.rain + "0, ";
+                //Pressure???
                 Decimal pressure = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
+                //Wind direction
+                String windDirection = getWindDirection(forecastElements[2].Attributes[1].Value);
+                tameteoApi.windDirection += "{y:5, windDirection:'" + forecastElements[2].Attributes[1].Value + "', marker:{symbol:'url(/Content/Images/" + windDirection + ")'}}, ";
+                //Wind
                 tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
                 //Temp is in Kelvin we need to convert by substracting -272.15
                 //We also round to 2 decimal
                 Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 272.15m, 0);
-                tameteoApi.temp = tameteoApi.temp + temp.ToString(new CultureInfo("en-US")) + ", ";
+                tameteoApi.temp = tameteoApi.temp + "{y:" + temp.ToString(new CultureInfo("en-US")) + ", symbolName:'" + forecastElements[0].Attributes[1].Value + "'}, ";
+                //Pressure
                 tameteoApi.pressure = tameteoApi.pressure + forecastElements[5].Attributes[1].Value + ", ";
                 //        //0 = < symbol number = "500" name = "light rain" var = "10d" />
                 //        //1 = < precipitation unit = "3h" value = "2.96" type = "rain" />
@@ -122,6 +136,7 @@ namespace MeteoWidget.Controllers
                 tameteoApi.dayStart[dayCounter] = (39.5m).ToString(new System.Globalization.CultureInfo("en-US"));
             tameteoApi.dayStart[6] = (39.5).ToString(new System.Globalization.CultureInfo("en-US"));
             //Remove last semicolon+space
+            tameteoApi.symbolName = tameteoApi.symbolName.Remove(tameteoApi.symbolName.Length - 2);
             tameteoApi.rain = tameteoApi.rain.Remove(tameteoApi.rain.Length - 2);
             tameteoApi.wind = tameteoApi.wind.Remove(tameteoApi.wind.Length - 2);
             tameteoApi.temp = tameteoApi.temp.Remove(tameteoApi.temp.Length - 2);
@@ -142,55 +157,76 @@ namespace MeteoWidget.Controllers
             return View(tameteoApi);
         }
 
-        //public ActionResult Meteov0()
-        //{
-        //    //Test XML serialization
-        //    //XDocument xDoc = GetMeteoApi();
-        //    XmlDocument response = GetXmlResponse("http://api.tameteo.com/index.php?api_lang=fr&localidad=25339&affiliate_id=fu7tkep336jx");
+        //Determine the weather icon to use base on the symbol number
+        //In this document we defined what we assigned: https://drive.google.com/open?id=1qXgqMQTOSEgDi_FNXmWR_T3BXVBw27rjtBbjI2rW1H0
+        //Currently we use basic settings
+        private String getWeatherIcon(int symbolNumber)
+        {
+            //String weatherIcon = "";
+            //if (symbolNumber <= 500)
+            //    return "1.png"; //Sun
+            //else return "10.png"; //Rain
+            //return "~/Content/Images/" + weatherIcon;
 
-        //    //Read the content of the API return XML
-        //    String allValues = "";
-        //    TameteoApi tameteoApi = new TameteoApi();
-        //    XmlNodeList dataElements = response.GetElementsByTagName("data");
-        //    for (int i = 0; i <= dataElements.Count - 1; i++)
-        //    {
-        //        XmlNodeList forecastElements = dataElements[i].ChildNodes;
-        //        for (int j = 0; j <= forecastElements.Count - 1; j++) {
-        //            allValues += forecastElements[j].Attributes[1].Value + ", ";
-        //        }
-        //        //Remove last semicolon+space
-        //        allValues = allValues.Remove(allValues.Length - 2);
-        //        switch (i)
-        //        {
-        //            case 0:
-        //                //Min temp
-        //                tameteoApi.minTempStr = allValues;
-        //                break;
-        //            case 1:
-        //                //Max temp
-        //                break;
-        //            default:
-        //                Console.WriteLine("Default case");
-        //                break;
-        //        }
-        //        allValues = "";
+            switch (symbolNumber)
+            {
+                case 800:
+                    return "1.png"; //Sun
+                case 801:
+                    return "2.png";
+                case 802:
+                case 803:
+                    return "3.png";
+                case 804:
+                    return "4.png";
+                case 300:
+                case 310:
+                case 500:
+                    return "5.png";
+                case 301:
+                case 311:
+                case 321:
+                case 501:
+                    return "6.png";
+                case 302:
+                case 312:
+                case 502:
+                    return "7.png";
+                case 520:
+                    return "8.png";
+                case 521:
+                    return "9.png";
+                case 503:
+                case 504:
+                case 522:
+                    return "10.png";
+                case 200:
+                case 210:
+                case 230:
+                    return "11.png";
+                case 201:
+                case 211:
+                case 221:
+                case 231:
+                    return "12.png";
+                case 202:
+                case 212:
+                case 232:
+                    return "13.png";
+                case 511:
+                    return "16.png";
+                default:
+                    return "602.png";
+            }
+        }
 
-        //    }
-
-        //    //tameteoApi.minTemp = new int[3];
-        //    //tameteoApi.maxTemp = new int[3];
-        //    tameteoApi.minTemp[0] = 1;
-        //    tameteoApi.minTemp[1] = 2;
-        //    tameteoApi.minTemp[2] = 3;
-        //    tameteoApi.maxTemp[0] = 4;
-        //    tameteoApi.maxTemp[1] = 5;
-        //    tameteoApi.maxTemp[2] = 6;
-
-        //    ViewBag.Title = "Home Page";
-
-        //    return View(tameteoApi);
-        //}
-
+        //Convert the string cardinal direction into as wind direction icon
+        private String getWindDirection(String windDirection)
+        {
+            if (windDirection.Length == 3)
+                windDirection = windDirection.Substring(1, 2);
+            return windDirection + ".png";
+        }
 
     }
 }

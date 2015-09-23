@@ -15,9 +15,12 @@ namespace MeteoWidget.Models
         public String[] dayStart;
         public String[] weekDay;
         public String[] weekEnd;
+        public String symbolNumber; //A number between 100 & 999 which represents the icon
+        public String symbolName; //Description of the weather
         public String temp;
         public String rain;
         public String wind;
+        public String windDirection;
         public String pressure;
 
         public TameteoApi()
@@ -29,9 +32,12 @@ namespace MeteoWidget.Models
             weekDay = new String[7];
             dayTime = "";
             weekEnd = new String[2] { "", "" };
+            symbolNumber = "";
+            symbolName = "";
             temp = "";
             rain = "";
             wind = "";
+            windDirection = "";
             pressure = "";
         }
     }
