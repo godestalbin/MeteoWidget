@@ -116,9 +116,9 @@ namespace MeteoWidget.Controllers
                 tameteoApi.windDirection += "{y:5, windDirection:'" + forecastElements[2].Attributes[1].Value + "', marker:{symbol:'url(/Content/Images/" + windDirection + ")'}}, ";
                 //Wind
                 tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
-                //Temp is in Kelvin we need to convert by substracting -272.15
+                //Temp is in Kelvin we need to convert by substracting -272.15 - Now temp is in Celsius ???
                 //We also round to 2 decimal
-                Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 272.15m, 0);
+                Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 0.0m, 0);
                 tameteoApi.temp = tameteoApi.temp + "{y:" + temp.ToString(new CultureInfo("en-US")) + ", symbolName:'" + forecastElements[0].Attributes[1].Value + "'}, ";
                 //Pressure
                 tameteoApi.pressure = tameteoApi.pressure + forecastElements[5].Attributes[1].Value + ", ";
