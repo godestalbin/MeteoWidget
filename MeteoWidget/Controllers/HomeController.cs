@@ -50,7 +50,7 @@ namespace MeteoWidget.Controllers
         public ActionResult Meteo()
         {
             //Query Open Weather api with city code for Wattignies
-            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=6454427&mode=xml");
+            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=6454427&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
 
             TameteoApi tameteoApi = new TameteoApi();
             XmlNodeList dataElements = response.GetElementsByTagName("time");
