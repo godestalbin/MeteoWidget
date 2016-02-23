@@ -57,6 +57,7 @@ namespace MeteoWidget.Controllers
             DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
             System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
             int dayCounter = 0;
+            int minTemp = 100; //We need to identify the min temp in order to set the y position for the wind direction
             for (int i = 0; i <= dataElements.Count - 1; i++)
             {
                 //dataElements[i].Attributes[0].Value
@@ -113,13 +114,17 @@ namespace MeteoWidget.Controllers
                 Decimal pressure = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
                 //Wind direction
                 String windDirection = getWindDirection(forecastElements[2].Attributes[1].Value);
-                tameteoApi.windDirection += "{y:5, windDirection:'" + forecastElements[2].Attributes[1].Value + "', marker:{symbol:'url(/Content/Images/" + windDirection + ")'}}, ";
+                //y:5,    
+                tameteoApi.windDirection += "{y: 5, windDirection:'" + forecastElements[2].Attributes[1].Value + "', marker:{symbol:'url(/Content/Images/" + windDirection + ")'}}, ";
                 //Wind
                 tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
                 //Temp is in Kelvin we need to convert by substracting -272.15 - Now temp is in Celsius ???
                 //We also round to 2 decimal
                 Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 0.0m, 0);
                 tameteoApi.temp = tameteoApi.temp + "{y:" + temp.ToString(new CultureInfo("en-US")) + ", symbolName:'" + forecastElements[0].Attributes[1].Value + "'}, ";
+                //Update min temp
+                if (minTemp > temp)
+                    minTemp = Convert.ToInt32(temp);
                 //Pressure
                 tameteoApi.pressure = tameteoApi.pressure + forecastElements[5].Attributes[1].Value + ", ";
                 //        //0 = < symbol number = "500" name = "light rain" var = "10d" />
@@ -135,6 +140,14 @@ namespace MeteoWidget.Controllers
             if (tameteoApi.dayStart[dayCounter] == "")
                 tameteoApi.dayStart[dayCounter] = (39.5m).ToString(new System.Globalization.CultureInfo("en-US"));
             tameteoApi.dayStart[6] = (39.5).ToString(new System.Globalization.CultureInfo("en-US"));
+
+            //Update wind direction if we have low temperature
+            if (minTemp < 5) {
+                //In this case we need to update y:5 as y:0
+                String tempY = (minTemp - 5).ToString();
+                tameteoApi.windDirection = tameteoApi.windDirection.Replace("y: 5", "y: " + tempY);
+            }
+
             //Remove last semicolon+space
             tameteoApi.symbolName = tameteoApi.symbolName.Remove(tameteoApi.symbolName.Length - 2);
             tameteoApi.rain = tameteoApi.rain.Remove(tameteoApi.rain.Length - 2);
