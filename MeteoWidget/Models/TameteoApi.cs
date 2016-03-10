@@ -22,6 +22,7 @@ namespace MeteoWidget.Models
         public String wind;
         public String windDirection;
         public String pressure;
+        public String isobarMapSrc;
 
         public TameteoApi()
         {
@@ -39,6 +40,7 @@ namespace MeteoWidget.Models
             wind = "";
             windDirection = "";
             pressure = "";
+            isobarMapSrc = "";
         }
     }
 }

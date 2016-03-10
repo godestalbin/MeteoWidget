@@ -47,6 +47,7 @@ namespace MeteoWidget.Controllers
             }
         }
 
+        //Use an ID with default int cityId = 6454427 Wattignies, 2989611 Olivet
         public ActionResult Meteo()
         {
             //Query Open Weather api with city code for Wattignies
@@ -144,7 +145,7 @@ namespace MeteoWidget.Controllers
             //Update wind direction if we have low temperature
             if (minTemp < 5) {
                 //In this case we need to update y:5 as y:0
-                String tempY = (minTemp - 5).ToString();
+                String tempY = (minTemp - 5).ToString(); //Set 5 degree below the min temp (avoid temp to be overwritten by the wind direction icons)
                 tameteoApi.windDirection = tameteoApi.windDirection.Replace("y: 5", "y: " + tempY);
             }
 
@@ -166,6 +167,9 @@ namespace MeteoWidget.Controllers
             if (tameteoApi.weekEnd[1] == "")
                 tameteoApi.weekEnd[1] = "50"; //Avoid to display weekend in visible part of the graph
             ViewBag.Title = "Home Page";
+
+            //Frontologie image from
+            tameteoApi.isobarMapSrc = getFrontologie(); //http://marine.meteoconsult.fr/cartes-meteo-marine/frontologie-0.php
 
             return View(tameteoApi);
         }
@@ -232,6 +236,25 @@ namespace MeteoWidget.Controllers
                     return "602.png";
             }
         }
+
+        //Load Meteo Frontologie to get the main image
+        private String getFrontologie()
+        {
+
+            try {
+                var html = new HtmlDocument();
+                html.LoadHtml(new WebClient().DownloadString("http://marine.meteoconsult.fr/cartes-meteo-marine/frontologie-0.php"));
+                var root = html.DocumentNode;
+                var anchors = root.Descendants("img");
+                var frontDivs = root.Descendants().Where(n => n.GetAttributeValue("id", "").Equals("carte_fronto"));
+                var frontDiv = frontDivs.First();
+                var imgFront = frontDiv.Descendants("img").First();
+                return imgFront.Attributes["src"].Value;
+            }
+            catch (Exception e) {
+                return "";
+            }
+         }
 
         //Convert the string cardinal direction into as wind direction icon
         private String getWindDirection(String windDirection)
