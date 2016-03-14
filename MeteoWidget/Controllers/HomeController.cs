@@ -48,12 +48,35 @@ namespace MeteoWidget.Controllers
         }
 
         //Use an ID with default int cityId = 6454427 Wattignies, 2989611 Olivet
-        public ActionResult Meteo()
+        //home/meteo/xxxxxx where xxxxxx=city ID got from Open Weather Map
+        public ActionResult Meteo(int id = 0)
         {
+            //Get store/refresh id in  cookie
+            HttpCookie cookie;
+            if (id != 0) //We've got a new city store/update in cookie
+            {
+                if (Request.Cookies["CityId"] != null) //Cookie already exists
+                    cookie = Request.Cookies["CityId"];
+                else {
+                    cookie = new HttpCookie("CityId"); //No cookie, create new one
+                    cookie.Expires = DateTime.MaxValue;
+                }
+                cookie.Value = id.ToString();
+                Response.SetCookie(cookie);
+            }
+            else //No id in the call
+                if (Request.Cookies["CityId"] != null) //Cookie already exists
+            {
+                cookie = Request.Cookies["CityId"];
+                id = Int32.Parse(cookie.Value);
+            }
+            else
+                id = 6454427; //Default value is Wattignies
             //Query Open Weather api with city code for Wattignies
-            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=6454427&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
+            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=" + id + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
 
             TameteoApi tameteoApi = new TameteoApi();
+            tameteoApi.cityName = response.FirstChild.FirstChild.FirstChild.InnerText;
             XmlNodeList dataElements = response.GetElementsByTagName("time");
             DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
             System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
@@ -172,6 +195,16 @@ namespace MeteoWidget.Controllers
             tameteoApi.isobarMapSrc = getFrontologie(); //http://marine.meteoconsult.fr/cartes-meteo-marine/frontologie-0.php
 
             return View(tameteoApi);
+        }
+
+        public void findCity(String city)
+        {
+            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
+            String cityCode = response.FirstChild.FirstChild.Attributes[0].Value;
+            if (cityCode.Length > 0)
+                Response.Redirect("/home/meteo/" + cityCode);
+            else
+                Response.Redirect("/");
         }
 
         //Determine the weather icon to use base on the symbol number

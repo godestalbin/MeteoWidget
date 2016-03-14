@@ -25,6 +25,10 @@
         <script type="text/javascript" async src="https://www.tameteo.com/wid_loader/0621ed8f70d8a01641e0a63b785ffa86"></script>
     </div>
 
+    <form action="/home/findCity">
+        City: <input type="text" name="city"><br>
+        <input type="submit" value="Submit">
+    </form>
 
     @Scripts.Render("~/bundles/jquery")
     <script>
@@ -41,7 +45,7 @@
         $(function () {
             $('#meteoWidget').highcharts({
                 title: {
-                    text: 'Temperature à Wattignies',
+                    text: 'Météo - ' + '@Model.cityName',
                 },
                 xAxis: {
                     gridLineWidth: 1,

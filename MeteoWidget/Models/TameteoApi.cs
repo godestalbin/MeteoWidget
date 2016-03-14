@@ -11,6 +11,7 @@ namespace MeteoWidget.Models
         //public int[] maxTemp;
         //public String minTempStr;
 
+        public String cityName;
         public String dayTime;
         public String[] dayStart;
         public String[] weekDay;
@@ -31,6 +32,7 @@ namespace MeteoWidget.Models
             //minTempStr = "";
             dayStart = new String[7] { "", "", "", "", "", "", "" };
             weekDay = new String[7];
+            cityName = "";
             dayTime = "";
             weekEnd = new String[2] { "", "" };
             symbolNumber = "";
