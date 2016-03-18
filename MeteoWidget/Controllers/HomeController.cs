@@ -77,6 +77,8 @@ namespace MeteoWidget.Controllers
 
             TameteoApi tameteoApi = new TameteoApi();
             tameteoApi.cityName = response.FirstChild.FirstChild.FirstChild.InnerText;
+            tameteoApi.lat = Convert.ToDecimal( response.FirstChild.FirstChild.ChildNodes[4].Attributes[1].Value.Replace(".",",") );
+            tameteoApi.lng = Convert.ToDecimal(response.FirstChild.FirstChild.ChildNodes[4].Attributes[2].Value.Replace(".", ","));
             XmlNodeList dataElements = response.GetElementsByTagName("time");
             DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
             System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
@@ -199,12 +201,26 @@ namespace MeteoWidget.Controllers
 
         public void findCity(String city)
         {
-            XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
-            String cityCode = response.FirstChild.FirstChild.Attributes[0].Value;
-            if (cityCode.Length > 0)
-                Response.Redirect("/home/meteo/" + cityCode);
-            else
+            try
+            {
+                //XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
+                HttpWebRequest request = WebRequest.Create("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72") as HttpWebRequest;
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(response.GetResponseStream());
+
+                String cityCode = xmlDoc.FirstChild.FirstChild.Attributes[0].Value;
+                if (cityCode.Length > 0)
+                    Response.Redirect("/home/meteo/" + cityCode);
+                else
+                    Response.Redirect("/");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
                 Response.Redirect("/");
+            }
         }
 
         //Determine the weather icon to use base on the symbol number

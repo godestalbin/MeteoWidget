@@ -11,6 +11,12 @@
     <meta name="viewport" content="width=device-width" />
     <title>Meteo</title>
     <meta http-equiv="refresh" content="3600">
+    <style>
+        #map {
+            width: 200px;
+            height: 200px;
+        }
+    </style>
 </head>
 <body>
     <div><p id="updatetime" style='font-family:Tahoma; font-size:small;'></p></div>
@@ -30,6 +36,9 @@
         <input type="submit" value="Submit">
     </form>
 
+    <p></p>
+    <div id="map"></div>
+
     @Scripts.Render("~/bundles/jquery")
     <script>
         //Display refresh time
@@ -37,6 +46,22 @@
         document.getElementById("updatetime").innerHTML = "Last update: " + currentdate.getHours() + ":"
                         + currentdate.getMinutes() + ":"
                         + currentdate.getSeconds();
+        //Google map script
+        var cityLatLng = {lat: @Model.lat.ToString().Replace(",", "."), lng: @Model.lng.ToString().Replace(",", ".")};
+        function initMap() {
+            var mapDiv = document.getElementById('map');
+            var map = new google.maps.Map(mapDiv, {
+                center: cityLatLng,
+                zoom: 10,
+                mapTypeControl: false,
+                streetViewControl: false
+            });
+            var marker = new google.maps.Marker({
+                position: cityLatLng,
+                map: map,
+                title: '@Model.cityName'
+            });
+        }
     </script>
     <script type="text/javascript">
         var model = @Html.Raw(Json.Encode(Model));
@@ -308,7 +333,8 @@
     </script>
 
     <script src="~/Scripts/highcharts.js"></script>
-
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+            async defer></script>
 
 
 </body>
