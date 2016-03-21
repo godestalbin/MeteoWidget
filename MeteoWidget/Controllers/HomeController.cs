@@ -310,6 +310,8 @@ namespace MeteoWidget.Controllers
         {
             if (windDirection.Length == 3)
                 windDirection = windDirection.Substring(1, 2);
+            if (windDirection == "")
+                windDirection = "Variable";
             return windDirection + ".png";
         }
 

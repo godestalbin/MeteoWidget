@@ -169,6 +169,7 @@
     <Content Include="Content\Images\S.png" />
     <Content Include="Content\Images\SE.png" />
     <Content Include="Content\Images\SW.png" />
+    <Content Include="Content\Images\Variable.png" />
     <Content Include="Content\Images\W.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
