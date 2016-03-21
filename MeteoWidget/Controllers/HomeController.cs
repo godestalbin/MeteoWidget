@@ -77,8 +77,8 @@ namespace MeteoWidget.Controllers
 
             TameteoApi tameteoApi = new TameteoApi();
             tameteoApi.cityName = response.FirstChild.FirstChild.FirstChild.InnerText;
-            tameteoApi.lat = Convert.ToDecimal( response.FirstChild.FirstChild.ChildNodes[4].Attributes[1].Value.Replace(".",",") );
-            tameteoApi.lng = Convert.ToDecimal(response.FirstChild.FirstChild.ChildNodes[4].Attributes[2].Value.Replace(".", ","));
+            tameteoApi.lat = Convert.ToDecimal(response.FirstChild.FirstChild.ChildNodes[4].Attributes[1].Value, new CultureInfo("en-US"));
+            tameteoApi.lng = Convert.ToDecimal(response.FirstChild.FirstChild.ChildNodes[4].Attributes[2].Value, new CultureInfo("en-US"));
             XmlNodeList dataElements = response.GetElementsByTagName("time");
             DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
             System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
