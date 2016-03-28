@@ -8,7 +8,7 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>Meteo</title>
     <meta http-equiv="refresh" content="3600">
     <style>
@@ -22,8 +22,8 @@
     <div><p id="updatetime" style='font-family:Tahoma; font-size:small;'></p></div>
 
     @*    <div style="border:dashed; border-width:thin;"></div>*@
-    <div id="meteoWidget" style="left:0; right:0; height: 400px;"></div> @*min-width: 800px;  margin: 0 auto;*@
-        <div style="width:960px; margin:0 auto; margin-top:10px;"><img alt="Carte isobare" src="@Model.isobarMapSrc"</div>
+    <div id="meteoWidget" style="left:0; right:0; height: 400px; margin: 0 auto;"></div> @*min-width: 800px;  margin: 0 auto;*@
+        <div style="max-width: 2000px; margin-top:10px;"><img alt="Carte isobare" src="@Model.isobarMapSrc"</div>
 
         <p></p>
         <div id="cont_0621ed8f70d8a01641e0a63b785ffa86">
