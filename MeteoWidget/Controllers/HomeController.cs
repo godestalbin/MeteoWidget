@@ -210,7 +210,7 @@ namespace MeteoWidget.Controllers
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(response.GetResponseStream());
 
-                String cityCode = xmlDoc.FirstChild.FirstChild.Attributes[0].Value;
+                String cityCode = xmlDoc.ChildNodes[1].FirstChild.Attributes[0].Value;
                 if (cityCode.Length > 0)
                     Response.Redirect("/home/meteo/" + cityCode);
                 else
