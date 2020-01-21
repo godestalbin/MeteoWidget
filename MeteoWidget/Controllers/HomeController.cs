@@ -76,9 +76,9 @@ namespace MeteoWidget.Controllers
             XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=" + id + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
 
             TameteoApi tameteoApi = new TameteoApi();
-            tameteoApi.cityName = response.FirstChild.FirstChild.FirstChild.InnerText;
-            tameteoApi.lat = Convert.ToDecimal(response.FirstChild.FirstChild.ChildNodes[4].Attributes[1].Value, new CultureInfo("en-US"));
-            tameteoApi.lng = Convert.ToDecimal(response.FirstChild.FirstChild.ChildNodes[4].Attributes[2].Value, new CultureInfo("en-US"));
+            tameteoApi.cityName = response.ChildNodes[1].FirstChild.FirstChild.InnerText;
+            tameteoApi.lat = Convert.ToDecimal(response.ChildNodes[1].FirstChild.ChildNodes[4].Attributes[1].Value, new CultureInfo("en-US"));
+            tameteoApi.lng = Convert.ToDecimal(response.ChildNodes[1].FirstChild.ChildNodes[4].Attributes[2].Value, new CultureInfo("en-US"));
             XmlNodeList dataElements = response.GetElementsByTagName("time");
             DateTime previousDate = DateTime.Parse("1900-01-01", new CultureInfo("en-US"));
             System.Text.StringBuilder dayTime = new System.Text.StringBuilder();
@@ -136,7 +136,7 @@ namespace MeteoWidget.Controllers
                     tameteoApi.rain = tameteoApi.rain + forecastElements[1].Attributes[1].Value + ", ";
                 else
                     tameteoApi.rain = tameteoApi.rain + "0, ";
-                //Pressure???
+                //Wind speed - Why we set pressure ???
                 Decimal pressure = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
                 //Wind direction
                 String windDirection = getWindDirection(forecastElements[2].Attributes[1].Value);
@@ -145,14 +145,15 @@ namespace MeteoWidget.Controllers
                 //Wind
                 tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
                 //Temp is in Kelvin we need to convert by substracting -272.15 - Now temp is in Celsius ???
+                //2020-01 it is back in Kelvin
                 //We also round to 2 decimal
-                Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 0.0m, 0);
+                Decimal temp = Math.Round(System.Convert.ToDecimal(forecastElements[4].Attributes[1].Value, new CultureInfo("en-US")) - 272.15m, 0);
                 tameteoApi.temp = tameteoApi.temp + "{y:" + temp.ToString(new CultureInfo("en-US")) + ", symbolName:'" + forecastElements[0].Attributes[1].Value + "'}, ";
                 //Update min temp
                 if (minTemp > temp)
                     minTemp = Convert.ToInt32(temp);
                 //Pressure
-                tameteoApi.pressure = tameteoApi.pressure + forecastElements[5].Attributes[1].Value + ", ";
+                tameteoApi.pressure = tameteoApi.pressure + forecastElements[6].Attributes[1].Value + ", ";
                 //        //0 = < symbol number = "500" name = "light rain" var = "10d" />
                 //        //1 = < precipitation unit = "3h" value = "2.96" type = "rain" />
                 //        //2 = < windDirection deg = "216" code = "SW" name = "Southwest" />
