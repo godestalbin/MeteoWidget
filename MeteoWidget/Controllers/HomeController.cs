@@ -76,7 +76,7 @@ namespace MeteoWidget.Controllers
             XmlDocument response = GetXmlResponse("http://api.openweathermap.org/data/2.5/forecast?id=" + id + "&mode=xml&APPID=8bb4878f2fd5be4923cf4da047064f72");
 
             TameteoApi tameteoApi = new TameteoApi();
-            tameteoApi.cityName = response.ChildNodes[1].FirstChild.FirstChild.InnerText;
+            tameteoApi.cityName = response.GetElementsByTagName("name").Item(0).InnerText;  //response.FirstChild.FirstChild.FirstChild.InnerText;
             tameteoApi.lat = Convert.ToDecimal(response.ChildNodes[1].FirstChild.ChildNodes[4].Attributes[1].Value, new CultureInfo("en-US"));
             tameteoApi.lng = Convert.ToDecimal(response.ChildNodes[1].FirstChild.ChildNodes[4].Attributes[2].Value, new CultureInfo("en-US"));
             XmlNodeList dataElements = response.GetElementsByTagName("time");
@@ -211,7 +211,7 @@ namespace MeteoWidget.Controllers
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(response.GetResponseStream());
 
-                String cityCode = xmlDoc.FirstChild.FirstChild.Attributes[0].Value;
+                String cityCode = xmlDoc.ChildNodes[1].FirstChild.Attributes[0].Value;
                 if (cityCode.Length > 0)
                     Response.Redirect("/home/meteo/" + cityCode);
                 else
