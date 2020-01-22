@@ -136,14 +136,14 @@ namespace MeteoWidget.Controllers
                     tameteoApi.rain = tameteoApi.rain + forecastElements[1].Attributes[1].Value + ", ";
                 else
                     tameteoApi.rain = tameteoApi.rain + "0, ";
-                //Wind speed - Why we set pressure ???
-                Decimal pressure = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
+                //Wind speed
+                Decimal windSpeed = System.Convert.ToDecimal(forecastElements[3].Attributes[0].Value, new CultureInfo("en-US")) * 3.6m;
                 //Wind direction
                 String windDirection = getWindDirection(forecastElements[2].Attributes[1].Value);
                 //y:5,    
                 tameteoApi.windDirection += "{y: 5, windDirection:'" + forecastElements[2].Attributes[1].Value + "', marker:{symbol:'url(/Content/Images/" + windDirection + ")'}}, ";
                 //Wind
-                tameteoApi.wind = tameteoApi.wind + pressure.ToString(new CultureInfo("en-US")) + ", ";
+                tameteoApi.wind = tameteoApi.wind + windSpeed.ToString(new CultureInfo("en-US")) + ", ";
                 //Temp is in Kelvin we need to convert by substracting -272.15 - Now temp is in Celsius ???
                 //2020-01 it is back in Kelvin
                 //We also round to 2 decimal
